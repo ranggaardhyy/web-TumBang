@@ -1,0 +1,32 @@
+RewriteEngine On
+RewriteBase /web-TumBang/
+
+# Rewrite requests for /login to /app/Auth/login.php
+RewriteRule ^login$ /web-TumBang/app/Auth/login.php [L]
+
+# Rewrite requests for /register to /app/Auth/register.php
+RewriteRule ^register$ /web-TumBang/app/Auth/register.php [L]
+
+# Rewrite requests for /dashboard to /app/Views/dashboard.php
+RewriteRule ^dashboard$ /web-TumBang/app/Views/dashboard.php [L]
+
+# Rewrite requests for /notification to /app/Views/notification.php
+RewriteRule ^notification$ /web-TumBang/app/Views/notification.php [L]
+
+# Rewrite requests for /deteksi to /app/Views/deteksi.php
+RewriteRule ^deteksi$ /web-TumBang/app/Views/deteksi.php [L]
+
+# Rewrite requests for /riwayat to /app/Views/riwayat.php
+RewriteRule ^riwayat$ /web-TumBang/app/Views/riwayat.php [L]
+
+# Rewrite requests for /stimulasi to /app/Views/stimulasi.php
+RewriteRule ^stimulasi$ /web-TumBang/app/Views/stimulasi.php [L]
+
+# Rewrite requests for /profile to /app/Views/profile.php
+RewriteRule ^profile$ /web-TumBang/app/Views/profile.php [L]
+
+# Rewrite requests for /logout to /app/Views/logout.php
+RewriteRule ^logout$ /web-TumBang/app/Views/login.php [L]
+
+# Menangani rute ke halaman utama
+RewriteRule ^$ /web-TumBang/app/Views/home.php [L]
