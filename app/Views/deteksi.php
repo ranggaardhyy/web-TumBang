@@ -207,26 +207,94 @@ $pertanyaan = [
     ],
 ];
 
+// Bagian menampilkan form pertanyaan
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['umur'])) {
     $umur = $_POST['umur'];
     if (array_key_exists($umur, $pertanyaan)) {
-        echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
-        echo '<h2 class="text-xl font-semibold mb-4">Pertanyaan untuk Umur ' . $umur . ':</h2>';
+        echo '<div class="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">';
+        echo '<form action="/web-TumBang/deteksi" method="POST">';
+        echo '<h2 class="text-2xl font-semibold mb-6 text-center">Pertanyaan Deteksi Perkembangan Anak Usia ' . $umur . '</h2>';
+        
+        // Menyimpan umur sebagai hidden input untuk referensi di proses selanjutnya
+        echo '<input type="hidden" name="umur_anak" value="' . $umur . '">';
+        
+        // Loop through pertanyaan untuk umur yang dipilih
         foreach ($pertanyaan[$umur] as $index => $question) {
-            echo '<div class="my-4">';
-            echo '<label for="pertanyaan' . $index . '" class="block mb-2 text-gray-600">' . $question . '</label>';
-            echo '<select name="jawaban[' . $index . ']" id="pertanyaan' . $index . '" class="border-2 border-gray-300 rounded p-2 w-full">';
-            echo '<option value="1">Ya</option>';
-            echo '<option value="0">Tidak</option>';
-            echo '</select>';
+            echo '<div class="mb-6 p-4 border rounded-lg">';
+            echo '<p class="text-lg font-medium mb-4">' . ($index + 1) . '. ' . $question . '</p>';
+            
+            echo '<div class="flex items-center">';
+            echo '<label class="inline-flex items-center mr-6">';
+            echo '<input type="radio" name="jawaban[' . $index . ']" value="1" class="form-radio text-blue-500" required>';
+            echo '<span class="ml-2 text-green-600">Ya</span>';
+            echo '</label>';
+            
+            echo '<label class="inline-flex items-center">';
+            echo '<input type="radio" name="jawaban[' . $index . ']" value="0" class="form-radio text-red-500" required>';
+            echo '<span class="ml-2 text-red-600">Tidak</span>';
+            echo '</label>';
+            echo '</div>';
             echo '</div>';
         }
-        echo '<button type="submit" class="w-full px-6 py-3 bg-blue-500 text-white rounded-lg mt-4 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition duration-300">Kirim Jawaban</button>';
+        
+        echo '<div class="text-center mt-6">';
+        echo '<button type="submit" class="px-8 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">';
+        echo 'Kirim Jawaban';
+        echo '</button>';
+        echo '</div>';
+        
         echo '</form>';
+        echo '</div>';
     } else {
-        echo "Usia yang Anda pilih tidak tersedia.";
+        echo '<div class="container mx-auto mt-8 p-6 bg-red-100 rounded-lg text-center">';
+        echo '<p class="text-red-700 text-xl">Usia yang Anda pilih tidak tersedia.</p>';
+        echo '</div>';
     }
 }
+
+// TAMBAHKAN KODE BARU INI DI SINI
+// Proses hasil jawaban
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['jawaban'])) {
+    $jawaban = $_POST['jawaban'];
+    $jumlahYa = array_sum($jawaban);
+    $totalPertanyaan = count($jawaban);
+
+    // Interpretasi Hasil
+    if ($jumlahYa == $totalPertanyaan || $jumlahYa == ($totalPertanyaan - 1)) {
+        $kategori = 'Sesuai Umur';
+        $saran = 'Lanjutkan Stimulasi Sesuai Umur';
+    } elseif ($jumlahYa == ($totalPertanyaan - 2) || $jumlahYa == ($totalPertanyaan - 3)) {
+        $kategori = 'Meragukan';
+        $saran = 'Lakukan stimulasi sesuai dengan aspek yang belum memenuhi. Lakukan dengan sering dan penuh kasih sayang dan kembali lakukan pemeriksaan setelah 2 minggu';
+    } else {
+        $kategori = 'Penyimpangan';
+        $saran = 'Kunjungi Pelayanan Kesehatan Terdekat';
+    }
+
+    // Tampilkan Hasil
+    echo '
+    <div class="bg-white p-6 rounded-lg shadow-lg mt-6">
+        <h2 class="text-2xl font-semibold text-center mb-4">Hasil Deteksi Perkembangan</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <p class="font-bold">Total Pertanyaan: ' . $totalPertanyaan . '</p>
+                <p class="font-bold">Jawaban "Ya": ' . $jumlahYa . '</p>
+                <p class="font-bold">Kategori: <span class="' . 
+                    ($kategori == 'Sesuai Umur' ? 'text-green-600' : 
+                    ($kategori == 'Meragukan' ? 'text-yellow-600' : 'text-red-600')) . 
+                '">' . $kategori . '</span></p>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg mb-2">Saran Tindakan:</h3>
+                <p class="' . 
+                    ($kategori == 'Sesuai Umur' ? 'text-green-700' : 
+                    ($kategori == 'Meragukan' ? 'text-yellow-700' : 'text-red-700')) . 
+                '">' . $saran . '</p>
+            </div>
+        </div>
+    </div>';
+}
+
 ?>
 
 <!DOCTYPE html>
