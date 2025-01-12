@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+include '../../config/db.php';
+
 // Pertanyaan berdasarkan usia
 $pertanyaan = [
     '3bulan' => [
@@ -46,15 +50,18 @@ $pertanyaan = [
         'Ada waktu bayi bermain sendiri dan Anda diam-diam datang berdiri di belakangnya, apakah ia menengok ke belakang seperti mendengar kedatangan Anda?',
         'Letakkan suatu mainan yang diinginkannya di luar jangakuan bayi, apakah ia mencoba mendapatkannya dengan mengulurkan tangan atau badannya?'
     ],
-    '12bulan' => ['Jika Anda bersembunyi di belakang sesuatu/pojok, kemudian muncul dan menghilang secara berulang-ulang di hadapan anak, apakah ia mencari Anda atau mengharapkan Anda muncul kembali?', 
-        'Letakkan pensil di telapak tangan bayi. Coba ambil pensil tersebut dengan perlahan, sulitkah Anda mendapatkan pensil itu kembali?', 'Apakah anak dapat berdiri selama 30 detik atau lebih dengan berpegangan pada kursi/meja?', 
-        'Apakah anak dapat mengatakan dua suku kata yang sama, misalnya: "ma-ma", "da-da", atau "pa-pa"?', 
-        'Apakah anak dapat mengangkat badannya ke posisi berdiri tanpa bantuan Anda?', 
-        'Apakah anak dapat membedakan Anda dengan orang yang belum ia kenal?', 
-        'Apakah anak dapat mengambil benda kecil, seperti kacang atau kismis, dengan meremmas di antara ibu jari dan jari-jari lainnya?', 
-        'Apakah anak dapat duduk sendiri tanpa bantuan?', 
-        'Sebut dua sampai tiga kata yang dapat ditiru oleh anak, apakah ia mencoba meniru menyebutkan kata-kata tadi?', 
-        'Tanpa bantuan, apakah anak mempertemukan dua kubus kecil yang ia pegang?'],
+    '12bulan' => [
+        'Jika Anda bersembunyi di belakang sesuatu/pojok, kemudian muncul dan menghilang secara berulang-ulang di hadapan anak, apakah ia mencari Anda atau mengharapkan Anda muncul kembali?',
+        'Letakkan pensil di telapak tangan bayi. Coba ambil pensil tersebut dengan perlahan, sulitkah Anda mendapatkan pensil itu kembali?',
+        'Apakah anak dapat berdiri selama 30 detik atau lebih dengan berpegangan pada kursi/meja?',
+        'Apakah anak dapat mengatakan dua suku kata yang sama, misalnya: "ma-ma", "da-da", atau "pa-pa"?',
+        'Apakah anak dapat mengangkat badannya ke posisi berdiri tanpa bantuan Anda?',
+        'Apakah anak dapat membedakan Anda dengan orang yang belum ia kenal?',
+        'Apakah anak dapat mengambil benda kecil, seperti kacang atau kismis, dengan meremmas di antara ibu jari dan jari-jari lainnya?',
+        'Apakah anak dapat duduk sendiri tanpa bantuan?',
+        'Sebut dua sampai tiga kata yang dapat ditiru oleh anak, apakah ia mencoba meniru menyebutkan kata-kata tadi?',
+        'Tanpa bantuan, apakah anak mempertemukan dua kubus kecil yang ia pegang?'
+    ],
     '15bulan' => [
         'Tanpa bantuan, apakah anak mempertemukan dua kubus kecil yang ia pegang?',
         'Apakah anak dapat berjalan sendiri atau jalan dengan berpegangan?',
@@ -84,9 +91,9 @@ $pertanyaan = [
         mainan di lantai, kemudian berdiri kembali?',
         'Apakah anak dapat menunjuk apa yang diinginkannya tanpa menangis atau merengek?
         Jawab YA bila ia menunjuk, menarik, atau mengeluarkan suara yang menyenangkan.',
-        'Apakah anak dapat berjalan di sepanjang ruangan tanpa jatuh atau terhuyung-huyung?', 
+        'Apakah anak dapat berjalan di sepanjang ruangan tanpa jatuh atau terhuyung-huyung?',
         'Apakah anak dapat mengambil benda kecil seperti kacang, kismis, atau potongan biskuit 
-        dengan menggunakan ibu jari dan jari telunjuknya?', 
+        dengan menggunakan ibu jari dan jari telunjuknya?',
         'Jika Anda menggelindingkan bola ke anak, apakah menggelinding/melemparkan kembali 
         bola pada Anda?',
         'Apakah anak dapat memegang sendiri cangkir/gelas dan minum dari wadah tersebut tanpa 
@@ -214,21 +221,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['umur'])) {
         echo '<div class="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">';
         echo '<form action="/web-TumBang/deteksi" method="POST">';
         echo '<h2 class="text-2xl font-semibold mb-6 text-center">Pertanyaan Deteksi Perkembangan Anak Usia ' . $umur . '</h2>';
-        
+
         // Menyimpan umur sebagai hidden input untuk referensi di proses selanjutnya
         echo '<input type="hidden" name="umur_anak" value="' . $umur . '">';
-        
+
         // Loop through pertanyaan untuk umur yang dipilih
         foreach ($pertanyaan[$umur] as $index => $question) {
             echo '<div class="mb-6 p-4 border rounded-lg">';
             echo '<p class="text-lg font-medium mb-4">' . ($index + 1) . '. ' . $question . '</p>';
-            
+
             echo '<div class="flex items-center">';
             echo '<label class="inline-flex items-center mr-6">';
             echo '<input type="radio" name="jawaban[' . $index . ']" value="1" class="form-radio text-blue-500" required>';
             echo '<span class="ml-2 text-green-600">Ya</span>';
             echo '</label>';
-            
+
             echo '<label class="inline-flex items-center">';
             echo '<input type="radio" name="jawaban[' . $index . ']" value="0" class="form-radio text-red-500" required>';
             echo '<span class="ml-2 text-red-600">Tidak</span>';
@@ -236,13 +243,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['umur'])) {
             echo '</div>';
             echo '</div>';
         }
-        
+
         echo '<div class="text-center mt-6">';
         echo '<button type="submit" class="px-8 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">';
         echo 'Kirim Jawaban';
         echo '</button>';
         echo '</div>';
-        
+
         echo '</form>';
         echo '</div>';
     } else {
@@ -252,23 +259,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['umur'])) {
     }
 }
 
-// TAMBAHKAN KODE BARU INI DI SINI
-// Proses hasil jawaban
+// Proses penyimpanan riwayat deteksi
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['jawaban'])) {
-    $jawaban = $_POST['jawaban'];
-    $jumlahYa = array_sum($jawaban);
-    $totalPertanyaan = count($jawaban);
+    try {
+        // Pastikan user_id tersedia di session
+        if (!isset($_SESSION['user_id'])) {
+            throw new Exception("Anda harus login terlebih dahulu");
+        }
 
-    // Interpretasi Hasil
-    if ($jumlahYa == $totalPertanyaan || $jumlahYa == ($totalPertanyaan - 1)) {
-        $kategori = 'Sesuai Umur';
-        $saran = 'Lanjutkan Stimulasi Sesuai Umur';
-    } elseif ($jumlahYa == ($totalPertanyaan - 2) || $jumlahYa == ($totalPertanyaan - 3)) {
-        $kategori = 'Meragukan';
-        $saran = 'Lakukan stimulasi sesuai dengan aspek yang belum memenuhi. Lakukan dengan sering dan penuh kasih sayang dan kembali lakukan pemeriksaan setelah 2 minggu';
-    } else {
-        $kategori = 'Penyimpangan';
-        $saran = 'Kunjungi Pelayanan Kesehatan Terdekat';
+        $jawaban = $_POST['jawaban'];
+        $umur = $_POST['umur_anak']; // Ambil umur dari hidden input
+        $user_id = $_SESSION['user_id']; 
+        $jumlahYa = array_sum($jawaban);
+        $totalPertanyaan = count($jawaban);
+
+        // Interpretasi Hasil
+        if ($jumlahYa == $totalPertanyaan || $jumlahYa == ($totalPertanyaan - 1)) {
+            $kategori = 'Sesuai Umur';
+            $saran = 'Lanjutkan Stimulasi Sesuai Umur';
+        } elseif ($jumlahYa == ($totalPertanyaan - 2) || $jumlahYa == ($totalPertanyaan - 3)) {
+            $kategori = 'Meragukan';
+            $saran = 'Lakukan stimulasi sesuai dengan aspek yang belum memenuhi.';
+        } else {
+            $kategori = 'Penyimpangan';
+            $saran = 'Kunjungi Pelayanan Kesehatan Terdekat';
+        }
+
+        // Simpan ke database menggunakan PDO
+        $query = "INSERT INTO riwayat_deteksi 
+                  (user_id, umur_anak, total_pertanyaan, jawaban_ya, kategori, saran) 
+                  VALUES (:user_id, :umur_anak, :total_pertanyaan, :jawaban_ya, :kategori, :saran)";
+        
+        // Persiapkan statement
+        $stmt = $db->prepare($query);
+        
+        // Bind parameter
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':umur_anak', $umur, PDO::PARAM_STR);
+        $stmt->bindParam(':total_pertanyaan', $totalPertanyaan, PDO::PARAM_INT);
+        $stmt->bindParam(':jawaban_ya', $jumlahYa, PDO::PARAM_INT);
+        $stmt->bindParam(':kategori', $kategori, PDO::PARAM_STR);
+        $stmt->bindParam(':saran', $saran, PDO::PARAM_STR);
+        
+        // Eksekusi statement
+        $stmt->execute();
+
+    } catch (PDOException $e) {
+        // Tangani error PDO
+        die("Error database: " . $e->getMessage());
+    } catch (Exception $e) {
+        // Tangani error umum
+        die($e->getMessage());
     }
 
     // Tampilkan Hasil
@@ -279,17 +320,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['jawaban'])) {
             <div>
                 <p class="font-bold">Total Pertanyaan: ' . $totalPertanyaan . '</p>
                 <p class="font-bold">Jawaban "Ya": ' . $jumlahYa . '</p>
-                <p class="font-bold">Kategori: <span class="' . 
-                    ($kategori == 'Sesuai Umur' ? 'text-green-600' : 
-                    ($kategori == 'Meragukan' ? 'text-yellow-600' : 'text-red-600')) . 
-                '">' . $kategori . '</span></p>
+                <p class="font-bold">Kategori: <span class="' .
+        ($kategori == 'Sesuai Umur' ? 'text-green-600' : ($kategori == 'Meragukan' ? 'text-yellow-600' : 'text-red-600')) .
+        '">' . $kategori . '</span></p>
             </div>
             <div>
                 <h3 class="font-bold text-lg mb-2">Saran Tindakan:</h3>
-                <p class="' . 
-                    ($kategori == 'Sesuai Umur' ? 'text-green-700' : 
-                    ($kategori == 'Meragukan' ? 'text-yellow-700' : 'text-red-700')) . 
-                '">' . $saran . '</p>
+                <p class="' .
+        ($kategori == 'Sesuai Umur' ? 'text-green-700' : ($kategori == 'Meragukan' ? 'text-yellow-700' : 'text-red-700')) .
+        '">' . $saran . '</p>
             </div>
         </div>
     </div>';
