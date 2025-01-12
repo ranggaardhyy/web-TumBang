@@ -33,6 +33,16 @@ switch ($requestUri) {
             exit();
         }
         break;
+    case '/deteksi':
+            // Pastikan pengguna sudah login sebelum mengakses deteksi
+            if (isset($_SESSION['user'])) {
+                require_once __DIR__ . '/app/Views/deteksi.php';
+            } else {
+                // Arahkan ke login jika belum login dan hentikan eksekusi
+                header('Location: ' . $baseUrl . '/login');
+                exit();
+            }
+            break;
     case '/profile':
         // Pastikan pengguna sudah login sebelum mengakses profile
         if (isset($_SESSION['user'])) {
